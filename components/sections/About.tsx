@@ -129,7 +129,8 @@ export default function About() {
 
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-purple-500 text-white font-bold text-sm hover:scale-105 transition-transform duration-300"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white font-bold text-sm hover:scale-105 transition-transform duration-300"
+              style={{ background: 'linear-gradient(135deg, #00d4ff, #28e98c)', boxShadow: '0 0 24px rgba(40,233,140,0.2)' }}
             >
               Let's Work Together →
             </Link>

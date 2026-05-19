@@ -50,7 +50,7 @@ export default function Contact() {
           >
             {[
               { icon: MapPin, label: 'Location',  value: 'Lucknow, Uttar Pradesh, India', sub: 'Available for remote worldwide' },
-              { icon: Mail,   label: 'Email',     value: 'ashutosh@crazydev.in',          sub: 'Reply within 24 hours' },
+              { icon: Mail,   label: 'Email',     value: 'contact@crazydev.in',          sub: 'Reply within 24 hours' },
             ].map(({ icon: Icon, label, value, sub }) => (
               <div key={label} className="flex items-start gap-4 glass rounded-xl p-5 border border-[#1a1a2e]">
                 <div className="w-10 h-10 rounded-lg bg-cyan-400/10 flex items-center justify-center shrink-0">

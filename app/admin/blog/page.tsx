@@ -8,6 +8,7 @@ import {
   Loader2, X, Save, Clock, Star,
 } from 'lucide-react';
 import FileUpload from '@/components/admin/FileUpload';
+import RichEditor from '@/components/admin/RichEditor';
 
 interface Post {
   _id: string; title: string; slug: string; excerpt: string;
@@ -199,10 +200,12 @@ export default function AdminBlog() {
                         className={`${inputCls} resize-none`} />
                     </div>
                     <div>
-                      <label className="block text-muted text-xs mb-2">Content * (supports HTML)</label>
-                      <textarea value={form.content} rows={10} onChange={e => setForm(p => ({ ...p, content: e.target.value }))}
-                        placeholder="<p>Your blog content here. HTML is supported.</p>"
-                        className={`${inputCls} resize-y font-mono text-xs`} />
+                      <label className="block text-muted text-xs mb-2">Content *</label>
+                      <RichEditor
+                        value={form.content}
+                        onChange={html => setForm(p => ({ ...p, content: html }))}
+                        minHeight={320}
+                      />
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                       <div>

@@ -1,19 +1,18 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '@/components/ui/Navbar';
 import Footer from '@/components/ui/Footer';
-import { ExternalLink, Github, ArrowLeft } from 'lucide-react';
+import { ExternalLink, Github, ArrowLeft, Calendar, Tag } from 'lucide-react';
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 async function getProject(slug: string) {
   try {
-    const res = await fetch(`${API}/projects/${slug}`, { next: { revalidate: 3600 } });
+    const res = await fetch(`${API}/projects/${slug}`, { next: { revalidate: 300 } });
     if (!res.ok) return null;
     const data = await res.json();
-    return data.data;
+    return data.success ? data.data : null;
   } catch {
     return null;
   }
@@ -23,9 +22,13 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const project = await getProject(params.slug);
   if (!project) return { title: 'Project Not Found' };
   return {
-    title:       project.title,
+    title: project.title,
     description: project.description,
-    openGraph:   { title: project.title, description: project.description, images: project.thumbnail ? [project.thumbnail] : [] },
+    openGraph: {
+      title: project.title,
+      description: project.description,
+      images: project.thumbnail ? [{ url: project.thumbnail }] : [],
+    },
   };
 }
 
@@ -36,50 +39,111 @@ export default async function ProjectDetail({ params }: { params: { slug: string
   return (
     <>
       <Navbar />
-      <main className="pt-24 pb-20 min-h-screen bg-[#080810]">
+      <main className="pt-24 pb-20 min-h-screen bg-[#06060f]">
         <div className="max-w-4xl mx-auto px-6">
-          <Link href="/projects" className="inline-flex items-center gap-2 text-muted hover:text-cyan-400 text-sm mb-8 transition-colors">
-            <ArrowLeft size={14} /> Back to Projects
+
+          <Link href="/projects"
+            className="inline-flex items-center gap-2 text-muted hover:text-green-400 text-sm mb-8 transition-colors group">
+            <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
+            Back to Projects
           </Link>
 
+          {/* Thumbnail */}
           {project.thumbnail && (
-            <div className="relative h-64 md:h-96 rounded-2xl overflow-hidden mb-8 border border-[#1a1a2e]">
-              <Image src={project.thumbnail} alt={project.title} fill className="object-cover" />
+            <div className="relative rounded-2xl overflow-hidden mb-8 border border-[#1a1a2e]"
+              style={{ background: '#0a0a14' }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={project.thumbnail}
+                alt={project.title}
+                className="w-full h-64 md:h-96 object-cover"
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+              />
             </div>
           )}
 
+          {/* Header */}
           <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
             <div>
-              <span className="tech-tag capitalize mb-2 inline-block">{project.category}</span>
-              <h1 className="text-3xl md:text-4xl font-black text-light mt-2">{project.title}</h1>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="tech-tag capitalize">{project.category}</span>
+                {project.featured && (
+                  <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold"
+                    style={{ background: 'rgba(40,233,140,0.12)', border: '1px solid rgba(40,233,140,0.25)', color: '#28e98c' }}>
+                    Featured
+                  </span>
+                )}
+              </div>
+              <h1 className="text-3xl md:text-4xl font-black text-light">{project.title}</h1>
+              {project.createdAt && (
+                <p className="text-muted text-xs font-mono mt-2 flex items-center gap-1.5">
+                  <Calendar size={11} />
+                  {new Date(project.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long' })}
+                </p>
+              )}
             </div>
-            <div className="flex gap-3">
+
+            <div className="flex gap-3 shrink-0">
               {project.githubUrl && (
                 <a href={project.githubUrl} target="_blank" rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg glass border border-[#1a1a2e] text-sm text-muted hover:text-light transition-colors">
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm text-muted hover:text-light transition-all"
+                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
                   <Github size={15} /> GitHub
                 </a>
               )}
               {project.liveUrl && (
                 <a href={project.liveUrl} target="_blank" rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-400 to-purple-500 text-white font-bold text-sm">
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white hover:scale-105 transition-all"
+                  style={{ background: 'linear-gradient(135deg, #00d4ff, #28e98c)', boxShadow: '0 0 20px rgba(40,233,140,0.2)' }}>
                   <ExternalLink size={15} /> Live Demo
                 </a>
               )}
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2 mb-8">
-            {project.tech.map((t: string) => <span key={t} className="tech-tag">{t}</span>)}
-          </div>
+          {/* Tech stack */}
+          {project.tech?.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-8 pb-8 border-b border-[#1a1a2e]">
+              <Tag size={13} className="text-muted mt-0.5 shrink-0" />
+              {project.tech.map((t: string) => (
+                <span key={t} className="tech-tag">{t}</span>
+              ))}
+            </div>
+          )}
 
-          <div className="prose prose-invert prose-sm max-w-none text-muted leading-relaxed">
-            <p className="text-base text-light mb-4">{project.description}</p>
-            {project.longDesc && <p>{project.longDesc}</p>}
+          {/* Description */}
+          <div className="space-y-6">
+            <p className="text-light text-base leading-relaxed">{project.description}</p>
+
+            {/* Long description — rendered as HTML from rich editor */}
+            {project.longDesc && (
+              <div
+                className="rich-content text-muted text-sm leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: project.longDesc }}
+              />
+            )}
           </div>
         </div>
       </main>
       <Footer />
+
+      <style>{`
+        .rich-content h1 { font-size: 1.4rem; font-weight: 800; color: #f1f5f9; margin: 1.2rem 0 0.5rem; }
+        .rich-content h2 { font-size: 1.15rem; font-weight: 700; color: #f1f5f9; margin: 1rem 0 0.4rem; }
+        .rich-content h3 { font-size: 1rem; font-weight: 600; color: #e2e8f0; margin: 0.8rem 0 0.3rem; }
+        .rich-content p  { margin: 0.5rem 0; }
+        .rich-content a  { color: #28e98c; text-decoration: underline; }
+        .rich-content strong { color: #f1f5f9; font-weight: 700; }
+        .rich-content em { font-style: italic; color: #94a3b8; }
+        .rich-content code { background: #1a1a2e; color: #00d4ff; padding: 0.1em 0.4em; border-radius: 4px; font-size: 0.82em; font-family: 'JetBrains Mono', monospace; }
+        .rich-content pre { background: #0d0d1a; border: 1px solid #1a1a2e; border-radius: 10px; padding: 1rem; margin: 0.75rem 0; overflow-x: auto; }
+        .rich-content pre code { background: none; color: #a5f3fc; padding: 0; font-size: 0.82rem; }
+        .rich-content ul { list-style: disc; padding-left: 1.4rem; }
+        .rich-content ol { list-style: decimal; padding-left: 1.4rem; }
+        .rich-content li { margin: 0.25rem 0; }
+        .rich-content blockquote { border-left: 3px solid #28e98c; padding-left: 1rem; color: #64748b; font-style: italic; margin: 0.8rem 0; }
+        .rich-content hr { border: none; border-top: 1px solid #1a1a2e; margin: 1.2rem 0; }
+      `}</style>
     </>
   );
 }

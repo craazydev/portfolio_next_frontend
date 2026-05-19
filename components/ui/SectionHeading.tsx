@@ -19,7 +19,7 @@ export default function SectionHeading({ label, title, subtitle, center = false 
     >
       <div className={`flex items-center gap-3 mb-4 ${center ? 'justify-center' : ''}`}>
         <div className="section-line" />
-        <span className="text-cyan-400 font-mono text-sm uppercase tracking-widest">{label}</span>
+        <span className="text-green-400 font-mono text-xs uppercase tracking-[0.2em]">{label}</span>
       </div>
       <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-light leading-tight">
         {title}

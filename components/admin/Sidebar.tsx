@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, FolderOpen, FileText, MessageSquare,
   User, ExternalLink, LogOut, Code2, Menu, X, ChevronRight,
-  Bot, BookOpen,
+  Bot, BookOpen, SearchCheck,
 } from 'lucide-react';
 
 const NAV = [
@@ -16,6 +16,7 @@ const NAV = [
   { href: '/admin/messages',  icon: MessageSquare,    label: 'Messages'     },
   { href: '/admin/chats',     icon: Bot,              label: 'AI Chats'     },
   { href: '/admin/knowledge', icon: BookOpen,         label: 'Knowledge Base'},
+  { href: '/admin/seo',       icon: SearchCheck,      label: 'SEO & Meta'   },
   { href: '/admin/profile',   icon: User,             label: 'Profile'      },
 ];
 

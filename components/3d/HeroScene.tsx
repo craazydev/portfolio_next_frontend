@@ -137,19 +137,21 @@ function Scene() {
       <ambientLight intensity={0.3} />
       <directionalLight position={[5, 5, 5]} intensity={0.8} color="#00d4ff" />
       <pointLight position={[-4, -4, -4]} intensity={1.2} color="#a855f7" />
-      <pointLight position={[4, 4, 4]}  intensity={0.6} color="#00d4ff" />
+      <pointLight position={[4, 4, 4]}  intensity={0.8} color="#28e98c" />
+      <pointLight position={[0, 0, 4]}  intensity={0.4} color="#00d4ff" />
 
       <CodeParticles />
       <GlowSphere />
 
       <OrbitRing radius={2.4} speed={0.3}  tilt={Math.PI / 6}  color="#00d4ff" />
-      <OrbitRing radius={3.0} speed={-0.2} tilt={Math.PI / 3}  color="#a855f7" />
-      <OrbitRing radius={3.6} speed={0.15} tilt={Math.PI / 1.5} color="#00d4ff" />
+      <OrbitRing radius={3.0} speed={-0.2} tilt={Math.PI / 3}  color="#28e98c" />
+      <OrbitRing radius={3.6} speed={0.15} tilt={Math.PI / 1.5} color="#a855f7" />
 
       <FloatingOrb position={[ 2.6,  0.6,  0.4]} color="#00d4ff" />
-      <FloatingOrb position={[-2.8, -0.4,  0.2]} color="#a855f7" />
-      <FloatingOrb position={[ 0.4,  2.8, -0.3]} color="#00d4ff" scale={0.8} />
-      <FloatingOrb position={[-0.6, -2.6,  0.5]} color="#f59e0b" scale={0.7} />
+      <FloatingOrb position={[-2.8, -0.4,  0.2]} color="#28e98c" />
+      <FloatingOrb position={[ 0.4,  2.8, -0.3]} color="#a855f7" scale={0.8} />
+      <FloatingOrb position={[-0.6, -2.6,  0.5]} color="#28e98c" scale={0.7} />
+      <FloatingOrb position={[ 1.8, -2.2,  0.3]} color="#00d4ff" scale={0.6} />
     </>
   );
 }

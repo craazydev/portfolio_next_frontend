@@ -6,10 +6,11 @@ import Footer  from '@/components/ui/Footer';
 import SectionHeading from '@/components/ui/SectionHeading';
 import { Clock, ArrowRight } from 'lucide-react';
 
-export const metadata: Metadata = {
-  title: 'Blog',
-  description: 'Articles on web development, React, Node.js, and software engineering by Ashutosh Dubey.',
-};
+import { getPageMeta } from '@/lib/getPageMeta';
+
+export async function generateMetadata(): Promise<Metadata> {
+  return getPageMeta('blog');
+}
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 

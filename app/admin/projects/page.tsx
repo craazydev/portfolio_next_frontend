@@ -8,6 +8,7 @@ import {
   Github, Star, Eye, EyeOff, Loader2, X, Save,
 } from 'lucide-react';
 import FileUpload from '@/components/admin/FileUpload';
+import RichEditor from '@/components/admin/RichEditor';
 
 interface Project {
   _id: string; title: string; slug: string; description: string;
@@ -195,8 +196,11 @@ export default function AdminProjects() {
                   </div>
                   <div className="sm:col-span-2">
                     <label className="block text-muted text-xs mb-2">Full Description (project detail page)</label>
-                    <textarea value={form.longDesc ?? ''} rows={4} onChange={e => setForm(p => ({ ...p, longDesc: e.target.value }))}
-                      className="w-full bg-[#0a0a14] border border-[#1a1a2e] rounded-xl px-4 py-3 text-light text-sm focus:outline-none focus:border-cyan-400/40 transition-all resize-none" />
+                    <RichEditor
+                      value={form.longDesc ?? ''}
+                      onChange={html => setForm(p => ({ ...p, longDesc: html }))}
+                      minHeight={200}
+                    />
                   </div>
                   <div>
                     <label className="block text-muted text-xs mb-2">Category</label>

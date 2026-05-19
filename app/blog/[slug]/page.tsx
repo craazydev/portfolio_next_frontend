@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 import Navbar from '@/components/ui/Navbar';
 import Footer from '@/components/ui/Footer';
 import { ArrowLeft, Clock, Calendar } from 'lucide-react';
@@ -10,7 +9,7 @@ const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 async function getPost(slug: string) {
   try {
-    const res = await fetch(`${API}/blog/${slug}`, { next: { revalidate: 3600 } });
+    const res = await fetch(`${API}/blog/${slug}`, { next: { revalidate: 300 } });
     if (!res.ok) return null;
     const data = await res.json();
     return data.data;
@@ -43,8 +42,8 @@ export default async function BlogPost({ params }: { params: { slug: string } })
       <Navbar />
       <main className="pt-24 pb-20 min-h-screen bg-[#080810]">
         <article className="max-w-3xl mx-auto px-6">
-          <Link href="/blog" className="inline-flex items-center gap-2 text-muted hover:text-cyan-400 text-sm mb-8 transition-colors">
-            <ArrowLeft size={14} /> Back to Blog
+          <Link href="/blog" className="inline-flex items-center gap-2 text-muted hover:text-green-400 text-sm mb-8 transition-colors group">
+            <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" /> Back to Blog
           </Link>
 
           <div className="flex flex-wrap gap-2 mb-4">
@@ -59,8 +58,9 @@ export default async function BlogPost({ params }: { params: { slug: string } })
           </div>
 
           {post.thumbnail && (
-            <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden mb-10 border border-[#1a1a2e]">
-              <Image src={post.thumbnail} alt={post.title} fill className="object-cover" />
+            <div className="rounded-2xl overflow-hidden mb-10 border border-[#1a1a2e]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={post.thumbnail} alt={post.title} className="w-full h-64 md:h-80 object-cover" />
             </div>
           )}
 

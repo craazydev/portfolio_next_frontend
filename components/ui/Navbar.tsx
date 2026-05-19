@@ -14,8 +14,8 @@ const NAV_LINKS = [
 ];
 
 export default function Navbar() {
-  const [scrolled,    setScrolled]    = useState(false);
-  const [mobileOpen,  setMobileOpen]  = useState(false);
+  const [scrolled,   setScrolled]   = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -24,7 +24,6 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Close mobile menu on route change
   useEffect(() => { setMobileOpen(false); }, [pathname]);
 
   return (
@@ -39,14 +38,15 @@ export default function Navbar() {
       >
         <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-cyan-400 to-purple-500 flex items-center justify-center glow-cyan">
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center transition-all group-hover:scale-105"
+              style={{ background: 'linear-gradient(135deg, #00d4ff, #28e98c)', boxShadow: '0 0 16px rgba(40,233,140,0.3)' }}>
               <Code2 size={18} className="text-white" />
             </div>
             <span className="font-mono font-bold text-lg">
-              <span className="text-cyan-400">ash</span>
+              <span className="text-green-400">ash</span>
               <span className="text-light">utosh</span>
-              <span className="text-purple-400">.</span>
+              <span className="text-cyan-400">.</span>
             </span>
           </Link>
 
@@ -55,17 +55,16 @@ export default function Navbar() {
             {NAV_LINKS.map(({ href, label }) => {
               const active = pathname === href;
               return (
-                <Link
-                  key={href}
-                  href={href}
-                  className={`relative px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg group ${
-                    active ? 'text-cyan-400' : 'text-muted hover:text-light'
+                <Link key={href} href={href}
+                  className={`relative px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg ${
+                    active ? 'text-green-400' : 'text-muted hover:text-light'
                   }`}
                 >
                   {active && (
                     <motion.span
                       layoutId="nav-pill"
-                      className="absolute inset-0 bg-cyan-400/10 rounded-lg border border-cyan-400/20"
+                      className="absolute inset-0 rounded-lg"
+                      style={{ background: 'rgba(40,233,140,0.08)', border: '1px solid rgba(40,233,140,0.2)' }}
                       transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                     />
                   )}
@@ -75,19 +74,16 @@ export default function Navbar() {
             })}
           </nav>
 
-          {/* CTA + Mobile Toggle */}
+          {/* CTA + Toggle */}
           <div className="flex items-center gap-3">
-            <Link
-              href="/contact"
-              className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold border-gradient text-cyan-400 hover:glow-cyan transition-all duration-300"
-            >
+            <Link href="/contact"
+              className="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all hover:scale-105"
+              style={{ background: 'linear-gradient(135deg, #00d4ff, #28e98c)', boxShadow: '0 0 20px rgba(40,233,140,0.2)' }}>
               Hire Me
             </Link>
-            <button
-              onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden p-2 rounded-lg glass text-light"
-              aria-label="Toggle menu"
-            >
+            <button onClick={() => setMobileOpen(!mobileOpen)}
+              className="md:hidden p-2 rounded-xl glass text-light"
+              aria-label="Toggle menu">
               {mobileOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
@@ -98,30 +94,27 @@ export default function Navbar() {
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.25 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
             className="fixed top-[68px] left-0 right-0 z-40 glass border-b border-[#1a1a2e] md:hidden"
           >
-            <nav className="flex flex-col p-6 gap-2">
+            <nav className="flex flex-col p-5 gap-1.5">
               {NAV_LINKS.map(({ href, label }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className={`py-3 px-4 rounded-lg text-sm font-medium transition-colors ${
+                <Link key={href} href={href}
+                  className={`py-3 px-4 rounded-xl text-sm font-medium transition-colors ${
                     pathname === href
-                      ? 'bg-cyan-400/10 text-cyan-400 border border-cyan-400/20'
+                      ? 'text-green-400'
                       : 'text-muted hover:text-light hover:bg-white/5'
                   }`}
-                >
+                  style={pathname === href ? { background: 'rgba(40,233,140,0.08)', border: '1px solid rgba(40,233,140,0.2)' } : {}}>
                   {label}
                 </Link>
               ))}
-              <Link
-                href="/contact"
-                className="mt-2 py-3 px-4 rounded-lg text-sm font-semibold text-center border-gradient text-cyan-400"
-              >
+              <Link href="/contact"
+                className="mt-2 py-3 px-4 rounded-xl text-sm font-semibold text-center text-white"
+                style={{ background: 'linear-gradient(135deg, #00d4ff, #28e98c)' }}>
                 Hire Me
               </Link>
             </nav>
