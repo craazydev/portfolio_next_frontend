@@ -4,7 +4,7 @@ import Loader         from '@/components/ui/Loader';
 import PageTransition from '@/components/ui/PageTransition';
 import ChatWidget     from '@/components/ui/ChatWidget';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://ashutoshdubey.dev';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://portfolio.crazydev.in';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -71,9 +71,8 @@ export const metadata: Metadata = {
     apple:   '/apple-touch-icon.png',
     shortcut:'/favicon-32x32.png',
   },
-  verification: {
-    google: 'your-google-verification-code',
-  },
+  // Add your real code from Google Search Console → Settings → Ownership verification
+  // verification: { google: 'REPLACE_WITH_REAL_CODE' },
 };
 
 // JSON-LD Structured Data

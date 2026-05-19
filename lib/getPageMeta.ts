@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://ashutoshdubey.dev';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://portfolio.crazydev.in';
 
 interface PageMetaDoc {
   title?: string;

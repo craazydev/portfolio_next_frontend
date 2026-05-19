@@ -5,7 +5,8 @@ import Navbar from '@/components/ui/Navbar';
 import Footer from '@/components/ui/Footer';
 import { ExternalLink, Github, ArrowLeft, Calendar, Tag } from 'lucide-react';
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const API      = process.env.NEXT_PUBLIC_API_URL  || 'http://localhost:5000/api';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://portfolio.crazydev.in';
 
 async function getProject(slug: string) {
   try {
@@ -18,16 +19,42 @@ async function getProject(slug: string) {
   }
 }
 
+export async function generateStaticParams() {
+  try {
+    const res  = await fetch(`${API}/projects`);
+    const data = await res.json();
+    return (data.data ?? []).map((p: { slug: string }) => ({ slug: p.slug }));
+  } catch {
+    return [];
+  }
+}
+
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const project = await getProject(params.slug);
   if (!project) return { title: 'Project Not Found' };
+
+  const title       = `${project.title} | Ashutosh Dubey`;
+  const description = project.description;
+  const url         = `${SITE_URL}/projects/${params.slug}`;
+  const image       = project.thumbnail || `${SITE_URL}/og-image.png`;
+
   return {
-    title: project.title,
-    description: project.description,
+    title,
+    description,
+    keywords:   project.tech ?? [],
+    alternates: { canonical: url },
     openGraph: {
-      title: project.title,
-      description: project.description,
-      images: project.thumbnail ? [{ url: project.thumbnail }] : [],
+      title,
+      description,
+      url,
+      type:   'website',
+      images: [{ url: image, width: 1200, height: 630, alt: title }],
+    },
+    twitter: {
+      card:        'summary_large_image',
+      title,
+      description,
+      images:      [image],
     },
   };
 }
@@ -36,8 +63,31 @@ export default async function ProjectDetail({ params }: { params: { slug: string
   const project = await getProject(params.slug);
   if (!project) notFound();
 
+  const url = `${SITE_URL}/projects/${params.slug}`;
+
+  const projectSchema = {
+    '@context':   'https://schema.org',
+    '@type':      'SoftwareApplication',
+    name:         project.title,
+    description:  project.description,
+    url,
+    image:        project.thumbnail || `${SITE_URL}/og-image.png`,
+    author: {
+      '@type': 'Person',
+      name:    'Ashutosh Dubey',
+      url:     SITE_URL,
+    },
+    applicationCategory: 'WebApplication',
+    ...(project.liveUrl  && { sameAs: project.liveUrl }),
+    ...(project.tech?.length && { keywords: project.tech.join(', ') }),
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(projectSchema) }}
+      />
       <Navbar />
       <main className="pt-24 pb-20 min-h-screen bg-[#06060f]">
         <div className="max-w-4xl mx-auto px-6">
@@ -48,7 +98,6 @@ export default async function ProjectDetail({ params }: { params: { slug: string
             Back to Projects
           </Link>
 
-          {/* Thumbnail */}
           {project.thumbnail && (
             <div className="relative rounded-2xl overflow-hidden mb-8 border border-[#1a1a2e]"
               style={{ background: '#0a0a14' }}>
@@ -62,7 +111,6 @@ export default async function ProjectDetail({ params }: { params: { slug: string
             </div>
           )}
 
-          {/* Header */}
           <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
             <div>
               <div className="flex items-center gap-2 mb-2">
@@ -101,7 +149,6 @@ export default async function ProjectDetail({ params }: { params: { slug: string
             </div>
           </div>
 
-          {/* Tech stack */}
           {project.tech?.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-8 pb-8 border-b border-[#1a1a2e]">
               <Tag size={13} className="text-muted mt-0.5 shrink-0" />
@@ -111,11 +158,9 @@ export default async function ProjectDetail({ params }: { params: { slug: string
             </div>
           )}
 
-          {/* Description */}
           <div className="space-y-6">
             <p className="text-light text-base leading-relaxed">{project.description}</p>
 
-            {/* Long description — rendered as HTML from rich editor */}
             {project.longDesc && (
               <div
                 className="rich-content text-muted text-sm leading-relaxed"

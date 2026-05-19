@@ -273,7 +273,7 @@ export default function AdminBlog() {
                     <div className="glass rounded-xl border border-[#1a1a2e] p-4">
                       <p className="text-muted text-xs mb-3 uppercase tracking-widest">Google Preview</p>
                       <p className="text-blue-400 text-sm font-medium mb-1 truncate">{form.metaTitle || form.title || 'Post Title'}</p>
-                      <p className="text-green-600 text-xs mb-1">ashutoshdubey.dev/blog/your-post-slug</p>
+                      <p className="text-green-600 text-xs mb-1">portfolio.crazydev.in/blog/your-post-slug</p>
                       <p className="text-muted text-xs line-clamp-2">{form.metaDesc || form.excerpt || 'Post description...'}</p>
                     </div>
                   </>

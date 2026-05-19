@@ -203,7 +203,7 @@ export default function AdminSEO() {
                 {form.title || `${page.label} — Ashutosh Dubey`}
               </p>
               <p className="text-green-700 text-xs font-mono">
-                ashutoshdubey.dev{page.path}
+                portfolio.crazydev.in{page.path}
               </p>
               <p className="text-[#4d5156] text-sm mt-1 leading-relaxed line-clamp-2">
                 {form.description || 'No description set. Google will pick a snippet from the page content.'}
