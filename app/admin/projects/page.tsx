@@ -15,12 +15,14 @@ interface Project {
   longDesc?: string; thumbnail?: string; thumbnailId?: string; tech: string[];
   category: string; liveUrl?: string; githubUrl?: string;
   featured: boolean; published: boolean; order: number;
+  metaTitle?: string; metaDesc?: string; metaKeywords?: string[]; ogImage?: string;
 }
 
 const EMPTY: Omit<Project, '_id' | 'slug'> = {
   title: '', description: '', longDesc: '', thumbnail: '', thumbnailId: '', tech: [],
   category: 'fullstack', liveUrl: '', githubUrl: '',
   featured: false, published: true, order: 0,
+  metaTitle: '', metaDesc: '', metaKeywords: [], ogImage: '',
 };
 const CATS = ['fullstack', 'frontend', 'backend', 'mobile', 'tool'];
 const API  = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
@@ -50,7 +52,7 @@ export default function AdminProjects() {
   async function fetchProjects() {
     setLoading(true);
     try {
-      const r = await fetch(`${API}/projects`, { headers });
+      const r = await fetch(`${API}/projects/admin/all`, { headers });
       const d = await r.json();
       setProjects(d.data ?? []);
     } finally { setLoading(false); }
@@ -65,7 +67,9 @@ export default function AdminProjects() {
     setForm({ title: p.title, description: p.description, longDesc: p.longDesc ?? '',
       thumbnail: p.thumbnail ?? '', thumbnailId: p.thumbnailId ?? '', tech: [...p.tech], category: p.category,
       liveUrl: p.liveUrl ?? '', githubUrl: p.githubUrl ?? '',
-      featured: p.featured, published: p.published, order: p.order });
+      featured: p.featured, published: p.published, order: p.order,
+      metaTitle: p.metaTitle ?? '', metaDesc: p.metaDesc ?? '',
+      metaKeywords: p.metaKeywords ?? [], ogImage: p.ogImage ?? '' });
     setTechInput('');
     setModal('edit');
   }
@@ -148,7 +152,11 @@ export default function AdminProjects() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 shrink-0">
+                  <div className="flex items-center gap-2 shrink-0">
+                  <Link href={`/projects/${p.slug}`} target="_blank"
+                    className="p-2 rounded-lg glass border border-[#1a1a2e] text-muted hover:text-green-400 transition-colors">
+                    <ExternalLink size={14} />
+                  </Link>
                   {p.liveUrl   && <a href={p.liveUrl}   target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg glass border border-[#1a1a2e] text-muted hover:text-cyan-400 transition-colors"><ExternalLink size={14} /></a>}
                   {p.githubUrl && <a href={p.githubUrl} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg glass border border-[#1a1a2e] text-muted hover:text-light transition-colors"><Github size={14} /></a>}
                   <button onClick={() => togglePublished(p)} className="p-2 rounded-lg glass border border-[#1a1a2e] text-muted hover:text-cyan-400 transition-colors">
@@ -265,6 +273,39 @@ export default function AdminProjects() {
                         <span className="text-muted text-xs">{lbl}</span>
                       </label>
                     ))}
+                  </div>
+
+                  <div className="sm:col-span-2 pt-5 border-t border-[#1a1a2e]">
+                    <h3 className="text-light text-sm font-bold mb-4">SEO Settings</h3>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-muted text-xs mb-2">Meta Title (max 60 chars)</label>
+                        <input value={form.metaTitle ?? ''} maxLength={60}
+                          onChange={e => setForm(p => ({ ...p, metaTitle: e.target.value }))}
+                          className="w-full bg-[#0a0a14] border border-[#1a1a2e] rounded-xl px-4 py-3 text-light text-sm focus:outline-none focus:border-cyan-400/40 transition-all" />
+                        <p className="text-muted text-xs mt-1">{(form.metaTitle ?? '').length}/60</p>
+                      </div>
+                      <div>
+                        <label className="block text-muted text-xs mb-2">Meta Description (max 160 chars)</label>
+                        <textarea value={form.metaDesc ?? ''} rows={3} maxLength={160}
+                          onChange={e => setForm(p => ({ ...p, metaDesc: e.target.value }))}
+                          className="w-full bg-[#0a0a14] border border-[#1a1a2e] rounded-xl px-4 py-3 text-light text-sm focus:outline-none focus:border-cyan-400/40 transition-all resize-none" />
+                        <p className="text-muted text-xs mt-1">{(form.metaDesc ?? '').length}/160</p>
+                      </div>
+                      <div>
+                        <label className="block text-muted text-xs mb-2">Meta Keywords (comma separated)</label>
+                        <input value={(form.metaKeywords ?? []).join(', ')}
+                          onChange={e => setForm(p => ({ ...p, metaKeywords: e.target.value.split(',').map(k => k.trim()).filter(Boolean) }))}
+                          className="w-full bg-[#0a0a14] border border-[#1a1a2e] rounded-xl px-4 py-3 text-light text-sm focus:outline-none focus:border-cyan-400/40 transition-all" />
+                      </div>
+                      <div>
+                        <label className="block text-muted text-xs mb-2">OG Image URL</label>
+                        <input value={form.ogImage ?? ''}
+                          onChange={e => setForm(p => ({ ...p, ogImage: e.target.value }))}
+                          placeholder="Defaults to thumbnail"
+                          className="w-full bg-[#0a0a14] border border-[#1a1a2e] rounded-xl px-4 py-3 text-light text-sm focus:outline-none focus:border-cyan-400/40 transition-all" />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

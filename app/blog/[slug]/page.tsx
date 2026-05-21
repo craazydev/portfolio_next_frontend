@@ -36,12 +36,12 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const title       = post.metaTitle || post.title;
   const description = post.metaDesc  || post.excerpt;
   const url         = `${SITE_URL}/blog/${params.slug}`;
-  const image       = post.thumbnail || `${SITE_URL}/og-image.png`;
+  const image       = post.ogImage || post.thumbnail || `${SITE_URL}/og-image.png`;
 
   return {
     title,
     description,
-    keywords:   post.tags ?? [],
+    keywords:   post.metaKeywords?.length ? post.metaKeywords : post.tags ?? [],
     alternates: { canonical: url },
     openGraph: {
       title,
@@ -72,8 +72,8 @@ export default async function BlogPost({ params }: { params: { slug: string } })
     '@context':       'https://schema.org',
     '@type':          'BlogPosting',
     headline:         post.title,
-    description:      post.excerpt,
-    image:            post.thumbnail || `${SITE_URL}/og-image.png`,
+    description:      post.metaDesc || post.excerpt,
+    image:            post.ogImage || post.thumbnail || `${SITE_URL}/og-image.png`,
     url,
     datePublished:    post.createdAt,
     dateModified:     post.updatedAt || post.createdAt,
@@ -87,7 +87,7 @@ export default async function BlogPost({ params }: { params: { slug: string } })
       name:    'Ashutosh Dubey',
       url:     SITE_URL,
     },
-    keywords:  (post.tags ?? []).join(', '),
+    keywords:  (post.metaKeywords?.length ? post.metaKeywords : post.tags ?? []).join(', '),
     mainEntityOfPage: { '@type': 'WebPage', '@id': url },
   };
 

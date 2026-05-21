@@ -14,13 +14,13 @@ interface Post {
   _id: string; title: string; slug: string; excerpt: string;
   content: string; thumbnail?: string; thumbnailId?: string; tags: string[]; category?: string;
   readTime: number; published: boolean; featured: boolean;
-  views: number; metaTitle?: string; metaDesc?: string; createdAt: string;
+  views: number; metaTitle?: string; metaDesc?: string; metaKeywords?: string[]; ogImage?: string; createdAt: string;
 }
 
 const EMPTY_POST = {
   title: '', excerpt: '', content: '', thumbnail: '', thumbnailId: '', tags: [] as string[],
   category: '', published: false, featured: false,
-  metaTitle: '', metaDesc: '',
+  metaTitle: '', metaDesc: '', metaKeywords: [] as string[], ogImage: '',
 };
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
@@ -48,7 +48,7 @@ export default function AdminBlog() {
   async function fetchPosts() {
     setLoading(true);
     try {
-      const r = await fetch(`${API}/blog?limit=50`, { headers });
+      const r = await fetch(`${API}/blog/admin/all`, { headers });
       const d = await r.json();
       setPosts(d.data ?? []);
     } finally { setLoading(false); }
@@ -64,6 +64,7 @@ export default function AdminBlog() {
       tags: [...p.tags], category: p.category ?? '',
       published: p.published, featured: p.featured,
       metaTitle: p.metaTitle ?? '', metaDesc: p.metaDesc ?? '',
+      metaKeywords: p.metaKeywords ?? [], ogImage: p.ogImage ?? '',
     });
     setTagInput(''); setModal('edit'); setActiveTab('content');
   }
@@ -147,6 +148,10 @@ export default function AdminBlog() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
+                  <Link href={`/blog/${p.slug}`} target="_blank"
+                    className="p-2 rounded-lg glass border border-[#1a1a2e] text-muted hover:text-cyan-400 transition-colors">
+                    <Eye size={14} />
+                  </Link>
                   <button onClick={() => togglePublished(p)} className="p-2 rounded-lg glass border border-[#1a1a2e] text-muted hover:text-cyan-400 transition-colors">
                     {p.published ? <Eye size={14} /> : <EyeOff size={14} />}
                   </button>
@@ -268,6 +273,19 @@ export default function AdminBlog() {
                       <textarea value={form.metaDesc} rows={3} maxLength={160} onChange={e => setForm(p => ({ ...p, metaDesc: e.target.value }))}
                         className={`${inputCls} resize-none`} />
                       <p className="text-muted text-xs mt-1">{form.metaDesc.length}/160</p>
+                    </div>
+                    <div>
+                      <label className="block text-muted text-xs mb-2">Meta Keywords (comma separated)</label>
+                      <input value={form.metaKeywords.join(', ')}
+                        onChange={e => setForm(p => ({ ...p, metaKeywords: e.target.value.split(',').map(k => k.trim()).filter(Boolean) }))}
+                        className={inputCls} />
+                    </div>
+                    <div>
+                      <label className="block text-muted text-xs mb-2">OG Image URL</label>
+                      <input value={form.ogImage}
+                        onChange={e => setForm(p => ({ ...p, ogImage: e.target.value }))}
+                        placeholder="Defaults to thumbnail"
+                        className={inputCls} />
                     </div>
                     {/* Preview */}
                     <div className="glass rounded-xl border border-[#1a1a2e] p-4">

@@ -33,15 +33,15 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const project = await getProject(params.slug);
   if (!project) return { title: 'Project Not Found' };
 
-  const title       = `${project.title} | Ashutosh Dubey`;
-  const description = project.description;
+  const title       = project.metaTitle || `${project.title} | Ashutosh Dubey`;
+  const description = project.metaDesc || project.description;
   const url         = `${SITE_URL}/projects/${params.slug}`;
-  const image       = project.thumbnail || `${SITE_URL}/og-image.png`;
+  const image       = project.ogImage || project.thumbnail || `${SITE_URL}/og-image.png`;
 
   return {
     title,
     description,
-    keywords:   project.tech ?? [],
+    keywords:   project.metaKeywords?.length ? project.metaKeywords : project.tech ?? [],
     alternates: { canonical: url },
     openGraph: {
       title,
@@ -69,9 +69,9 @@ export default async function ProjectDetail({ params }: { params: { slug: string
     '@context':   'https://schema.org',
     '@type':      'SoftwareApplication',
     name:         project.title,
-    description:  project.description,
+    description:  project.metaDesc || project.description,
     url,
-    image:        project.thumbnail || `${SITE_URL}/og-image.png`,
+    image:        project.ogImage || project.thumbnail || `${SITE_URL}/og-image.png`,
     author: {
       '@type': 'Person',
       name:    'Ashutosh Dubey',
@@ -79,7 +79,9 @@ export default async function ProjectDetail({ params }: { params: { slug: string
     },
     applicationCategory: 'WebApplication',
     ...(project.liveUrl  && { sameAs: project.liveUrl }),
-    ...(project.tech?.length && { keywords: project.tech.join(', ') }),
+    ...((project.metaKeywords?.length || project.tech?.length) && {
+      keywords: (project.metaKeywords?.length ? project.metaKeywords : project.tech).join(', '),
+    }),
   };
 
   return (
