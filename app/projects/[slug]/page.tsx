@@ -108,7 +108,6 @@ export default async function ProjectDetail({ params }: { params: { slug: string
                 src={project.thumbnail}
                 alt={project.title}
                 className="w-full h-64 md:h-96 object-cover"
-                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
               />
             </div>
           )}
