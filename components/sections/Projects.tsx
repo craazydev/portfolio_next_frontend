@@ -128,7 +128,7 @@ export default function Projects() {
                   whileHover={{ y: -4 }}
                 >
                   {/* Thumbnail */}
-                  <div className="relative h-48 bg-[#0a0a14] overflow-hidden">
+                  <Link href={`/projects/${project.slug}`} className="relative block h-48 bg-[#0a0a14] overflow-hidden">
                     <ProjectImage src={project.thumbnail || ''} alt={project.title} />
 
                     {project.featured && (
@@ -139,14 +139,16 @@ export default function Projects() {
                     )}
                     {/* Bottom fade */}
                     <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#0a0a14] to-transparent" />
-                  </div>
+                  </Link>
 
                   {/* Content */}
                   <div className="p-6">
                     <div className="flex items-start justify-between gap-2 mb-3">
-                      <h3 className="text-light font-bold text-base group-hover:text-green-400 transition-colors leading-snug">
+                      <Link href={`/projects/${project.slug}`} className="min-w-0">
+                        <h3 className="text-light font-bold text-base hover:text-green-400 transition-colors leading-snug">
                         {project.title}
-                      </h3>
+                        </h3>
+                      </Link>
                       <div className="flex gap-1.5 shrink-0">
                         {project.githubUrl && (
                           <a href={project.githubUrl} target="_blank" rel="noopener noreferrer"
